@@ -1,0 +1,118 @@
+<div class="card">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-comments mr-2"></i>Feedbacks</h2>
+    <button *ngIf="canCreate" pButton label="Add Feedback" icon="pi pi-plus"
+            (click)="openCreateModal()" class="p-button-success"></button>
+  </div>
+
+  <!-- Filters -->
+  <div class="flex gap-2 mb-4 flex-wrap">
+    <span class="p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input pInputText type="text" [(ngModel)]="filterText"
+             placeholder="Search..." (input)="onSearch()"/>
+    </span>
+    <p-dropdown [options]="activeCourses" [(ngModel)]="courseFilter"
+                optionLabel="courseName" optionValue="id"
+                placeholder="Filter by course" [showClear]="true"
+                (onChange)="onSearch()"></p-dropdown>
+    <p-dropdown [options]="ratingOptions" [(ngModel)]="ratingFilter"
+                optionLabel="label" optionValue="value"
+                placeholder="Filter by rating" [showClear]="true"
+                (onChange)="onSearch()"></p-dropdown>
+  </div>
+
+  <!-- Table -->
+  <p-table [value]="feedbacks" [lazy]="true" (onLazyLoad)="loadFeedbacks($event)"
+           [totalRecords]="totalCount" [rows]="pageSize" [paginator]="true"
+           [loading]="loading" dataKey="id" styleClass="p-datatable-gridlines p-datatable-striped">
+    <ng-template pTemplate="header">
+      <tr>
+        <th>Student</th>
+        <th>Course</th>
+        <th>Rating</th>
+        <th>Comment</th>
+        <th>Date</th>
+        <th>Attachment</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-fb>
+      <tr>
+        <td>{{ fb.studentName }}</td>
+        <td>{{ fb.courseName }}</td>
+        <td>
+          <p-rating [ngModel]="fb.rating" [readonly]="true" [cancel]="false" [stars]="5"></p-rating>
+        </td>
+        <td>{{ fb.comment | slice:0:80 }}{{ fb.comment?.length > 80 ? '...' : '' }}</td>
+        <td>{{ fb.createdDate | date:'mediumDate' }}</td>
+        <td>
+          <a *ngIf="fb.attachmentPath" [href]="getFileUrl(fb.attachmentPath)"
+             target="_blank" class="text-primary">
+            <i class="pi pi-paperclip mr-1"></i>{{ fb.attachmentFileName }}
+          </a>
+          <span *ngIf="!fb.attachmentPath" class="text-secondary">None</span>
+        </td>
+        <td>
+          <button *ngIf="canEdit" pButton icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2"
+                  (click)="openEditModal(fb)"></button>
+          <button *ngIf="canDelete" pButton icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                  (click)="deleteFeedback(fb.id)"></button>
+          <span *ngIf="!canEdit && !canDelete" class="text-secondary">View only</span>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr><td colspan="7" class="text-center">No feedbacks found.</td></tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- Create/Edit Modal -->
+<p-dialog [(visible)]="showModal" [header]="isEdit ? 'Edit Feedback' : 'Add Feedback'"
+          [modal]="true" [style]="{width: '560px'}" [draggable]="false">
+  <form [formGroup]="feedbackForm" class="mt-2">
+    <div class="field">
+      <label>Student</label>
+      <input pInputText [value]="isEdit ? editStudentName : appSession.user?.name + ' ' + appSession.user?.surname"
+             class="w-full" [disabled]="true"/>
+    </div>
+    <div class="field mt-3">
+      <label>Course *</label>
+      <p-dropdown formControlName="courseId" [options]="activeCourses"
+                  optionLabel="courseName" optionValue="id"
+                  placeholder="Select course" class="w-full"></p-dropdown>
+    </div>
+    <div class="field mt-3">
+      <label>Rating *</label>
+      <p-dropdown formControlName="rating" [options]="ratingOptions"
+                  optionLabel="label" optionValue="value"
+                  placeholder="Select rating (1-5)" class="w-full"
+                  [style]="{'width':'100%'}"></p-dropdown>
+    </div>
+    <div class="field mt-3">
+      <label>Comment</label>
+      <textarea pInputTextarea formControlName="comment" rows="4" class="w-full"
+                placeholder="Enter feedback comment..."></textarea>
+    </div>
+    <div class="field mt-3">
+      <label>Attachment (PDF, JPG, PNG — max 10MB)</label>
+      <p-fileUpload mode="basic" [auto]="true" [customUpload]="true"
+                    (uploadHandler)="onFileUpload($event)"
+                    accept=".pdf,.jpg,.jpeg,.png"
+                    chooseLabel="Choose File" styleClass="w-full"></p-fileUpload>
+      <small *ngIf="uploadedFileName" class="text-success mt-1 block">
+        <i class="pi pi-check mr-1"></i>{{ uploadedFileName }} uploaded
+      </small>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <button pButton label="Cancel" icon="pi pi-times"
+            (click)="showModal = false" class="p-button-text"></button>
+    <button pButton label="Save" icon="pi pi-check"
+            (click)="saveFeedback()" [disabled]="feedbackForm.invalid || uploading"></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>

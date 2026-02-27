@@ -1,0 +1,97 @@
+<div class="container-fluid mt-3">
+  <h2 class="mb-4"><i class="fas fa-tachometer-alt mr-2"></i>Dashboard</h2>
+
+  <!-- Loading spinner -->
+  <div *ngIf="loading" class="flex justify-content-center mt-6">
+    <i class="pi pi-spin pi-spinner text-4xl"></i>
+  </div>
+
+  <div *ngIf="!loading">
+    <!-- Stats Cards -->
+    <div class="grid">
+      <div class="col-12 md:col-4">
+        <div class="card shadow-2 text-center p-4">
+          <i class="fas fa-book text-primary" style="font-size:2rem"></i>
+          <div class="text-4xl font-bold mt-2">{{ dashboardData?.totalCourseCount || 0 }}</div>
+          <div class="text-secondary mt-1">{{ courseLabel }}</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-4">
+        <div class="card shadow-2 text-center p-4">
+          <i class="fas fa-comments text-success" style="font-size:2rem"></i>
+          <div class="text-4xl font-bold mt-2">{{ dashboardData?.totalFeedbackCount || 0 }}</div>
+          <div class="text-secondary mt-1">{{ feedbackLabel }}</div>
+        </div>
+      </div>
+      <div class="col-12 md:col-4">
+        <div class="card shadow-2 text-center p-4">
+          <i class="fas fa-star text-warning" style="font-size:2rem"></i>
+          <div class="text-4xl font-bold mt-2">
+            {{ dashboardData?.averageRating ? (dashboardData.averageRating | number:'1.1-1') : 'N/A' }}
+          </div>
+          <div class="text-secondary mt-1">{{ ratingLabel }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Courses by Rating -->
+    <div class="grid mt-3">
+      <div class="col-12 md:col-6">
+        <div class="card shadow-2">
+          <h3 class="mb-3"><i class="fas fa-trophy mr-2 text-warning"></i>{{ topCoursesTitle }}</h3>
+          <p-table [value]="dashboardData?.topCoursesByRating || []" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>#</th>
+                <th>Course</th>
+                <th>Avg Rating</th>
+                <th>Feedbacks</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-c let-rowIndex="rowIndex">
+              <tr>
+                <td>{{ rowIndex + 1 }}</td>
+                <td>{{ c.courseName }}</td>
+                <td>
+                  <p-rating [ngModel]="c.averageRating" [readonly]="true" [cancel]="false"></p-rating>
+                </td>
+                <td>{{ c.feedbackCount }}</td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr><td colspan="4" class="text-center p-3">No feedback data yet.</td></tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+
+      <!-- Recent Feedbacks -->
+      <div class="col-12 md:col-6">
+        <div class="card shadow-2">
+          <h3 class="mb-3"><i class="fas fa-clock mr-2 text-info"></i>{{ recentFeedbacksTitle }}</h3>
+          <p-table [value]="dashboardData?.recentFeedbacks || []" styleClass="p-datatable-sm">
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Student</th>
+                <th>Course</th>
+                <th>Rating</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-fb>
+              <tr>
+                <td>{{ fb.studentName }}</td>
+                <td>{{ fb.courseName }}</td>
+                <td>
+                  <p-rating [ngModel]="fb.rating" [readonly]="true" [cancel]="false"></p-rating>
+                </td>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="emptymessage">
+              <tr><td colspan="3" class="text-center p-3">No feedbacks yet.</td></tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

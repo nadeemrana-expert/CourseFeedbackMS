@@ -1,0 +1,123 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# ========================
+# .NET / ASP.NET Core
+# ========================
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.pdb
+*.dll
+*.exe
+*.cache
+*.log
+
+# NuGet
+**/packages/
+*.nupkg
+**/project.lock.json
+**/project.fragment.lock.json
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+
+# Visual Studio
+.vs/
+*.vspscc
+*.vssscc
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+launchSettings.json
+
+# Rider
+.idea/
+*.sln.iml
+
+# ========================
+# Angular / Node.js
+# ========================
+angular/node_modules/
+angular/dist/
+angular/.angular/
+angular/tmp/
+angular/out-tsc/
+angular/.sass-cache/
+angular/connect.lock
+angular/coverage/
+angular/libpeerconnection.log
+angular/testem.log
+angular/typings/
+angular/e2e/*.js
+angular/e2e/*.map
+
+# npm & yarn
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.yarn/
+.pnp.*
+
+# ========================
+# Logs & App Data
+# ========================
+aspnet-core/src/CourseFeedbackMS.Web.Host/App_Data/Logs/
+aspnet-core/src/CourseFeedbackMS.Web.Mvc/App_Data/Logs/
+aspnet-core/src/CourseFeedbackMS.Migrator/Logs/
+*.log
+
+# ========================
+# User-uploaded files (generated at runtime)
+# ========================
+aspnet-core/src/CourseFeedbackMS.Web.Host/wwwroot/uploads/
+
+# ========================
+# OS files
+# ========================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ========================
+# Secrets / Environment
+# ========================
+*.env
+appsettings.*.local.json
+
+# ========================
+# Build output
+# ========================
+*.swp
+*~
+*.orig
+
+# ========================
+# Test results
+# ========================
+TestResults/
+coverage/
+*.trx
+
+# ========================
+# Docker
+# ========================
+docker-compose.override.yml
+
+# ========================
+# Misc
+# ========================
+*.pdf
+rename.ps1

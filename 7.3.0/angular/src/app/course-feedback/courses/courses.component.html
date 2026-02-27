@@ -1,0 +1,95 @@
+<div class="card">
+  <div class="flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-book mr-2"></i>Courses</h2>
+    <button *ngIf="canCreate" pButton label="Add Course" icon="pi pi-plus"
+            (click)="openCreateModal()" class="p-button-success"></button>
+  </div>
+
+  <!-- Search & Filter Bar -->
+  <div class="flex gap-2 mb-4">
+    <span class="p-input-icon-left">
+      <i class="pi pi-search"></i>
+      <input pInputText type="text" [(ngModel)]="filterText"
+             placeholder="Search courses..." (input)="onSearch()"/>
+    </span>
+    <p-dropdown [options]="activeFilterOptions" [(ngModel)]="isActiveFilter"
+                placeholder="All" (onChange)="onSearch()" [showClear]="true"></p-dropdown>
+  </div>
+
+  <!-- Data Table -->
+  <p-table [value]="courses" [lazy]="true" (onLazyLoad)="loadCourses($event)"
+           [totalRecords]="totalCount" [rows]="pageSize" [paginator]="true"
+           [sortField]="sortField" [sortOrder]="sortOrder"
+           [loading]="loading" dataKey="id"
+           styleClass="p-datatable-gridlines p-datatable-striped">
+    <ng-template pTemplate="header">
+      <tr>
+        <th pSortableColumn="CourseName">Course Name <p-sortIcon field="CourseName"></p-sortIcon></th>
+        <th pSortableColumn="InstructorName">Instructor <p-sortIcon field="InstructorName"></p-sortIcon></th>
+        <th>Status</th>
+        <th>Feedbacks</th>
+        <th>Avg Rating</th>
+        <th>Actions</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-course>
+      <tr>
+        <td>{{ course.courseName }}</td>
+        <td>{{ course.instructorName }}</td>
+        <td>
+          <span [class]="course.isActive ? 'badge badge-success' : 'badge badge-danger'">
+            {{ course.isActive ? 'Active' : 'Inactive' }}
+          </span>
+        </td>
+        <td>{{ course.feedbackCount }}</td>
+        <td>{{ course.averageRating ? (course.averageRating | number:'1.1-1') : 'N/A' }}</td>
+        <td>
+          <button *ngIf="canEdit" pButton icon="pi pi-pencil" class="p-button-rounded p-button-info mr-2"
+                  (click)="openEditModal(course)"></button>
+          <button *ngIf="canDelete" pButton icon="pi pi-trash" class="p-button-rounded p-button-danger"
+                  (click)="deleteCourse(course.id)"></button>
+          <span *ngIf="!canEdit && !canDelete" class="text-secondary">View only</span>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr><td colspan="6" class="text-center">No courses found.</td></tr>
+    </ng-template>
+  </p-table>
+</div>
+
+<!-- Create/Edit Modal -->
+<p-dialog [(visible)]="showModal" [header]="isEdit ? 'Edit Course' : 'Create Course'"
+          [modal]="true" [style]="{width: '500px'}" [draggable]="false">
+  <form [formGroup]="courseForm">
+    <div class="field mt-3">
+      <label for="courseName">Course Name *</label>
+      <input id="courseName" pInputText formControlName="courseName"
+             class="w-full" placeholder="Enter course name"/>
+      <small class="p-error" *ngIf="courseForm.get('courseName')?.invalid && courseForm.get('courseName')?.touched">
+        Course name is required.
+      </small>
+    </div>
+    <div class="field mt-3">
+      <label for="instructorName">Instructor Name *</label>
+      <input id="instructorName" pInputText formControlName="instructorName"
+             class="w-full" placeholder="Enter instructor name"/>
+      <small class="p-error" *ngIf="courseForm.get('instructorName')?.invalid && courseForm.get('instructorName')?.touched">
+        Instructor name is required.
+      </small>
+    </div>
+    <div class="field mt-3 flex align-items-center gap-2">
+      <p-checkbox formControlName="isActive" [binary]="true" inputId="isActive"></p-checkbox>
+      <label for="isActive">Active</label>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <button pButton label="Cancel" icon="pi pi-times"
+            (click)="showModal = false" class="p-button-text"></button>
+    <button pButton label="Save" icon="pi pi-check"
+            (click)="saveCourse()" [disabled]="courseForm.invalid"></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>
+<p-toast></p-toast>
