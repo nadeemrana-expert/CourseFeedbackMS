@@ -116,11 +116,11 @@ Navigate to `http://localhost:4200` and log in with:
 | User | Username | Password | Role | Description |
 |---|---|---|---|---|
 | Administrator | `admin` | `123qwe` | Admin | Full system access, manages users/courses. Cannot submit feedback. |
-| Teacher 1 | `teacher1` | `123qwe` | Teacher | John Doe — instructs "Intro to Programming" and "Web Development" |
-| Teacher 2 | `teacher2` | `123qwe` | Teacher | Jane Smith — instructs "Data Structures" and "Database Systems" |
-| Student 1 | `student1` | `123qwe` | Student | Alice Johnson — can submit/edit/delete own feedback |
-| Student 2 | `student2` | `123qwe` | Student | Bob Williams — can submit/edit/delete own feedback |
-| Student 3 | `student3` | `123qwe` | Student | Charlie Brown — can submit/edit/delete own feedback |
+| Teacher 1 | `john` | `123qwe` | Teacher | John Doe — instructs "Intro to Programming" and "Web Development" |
+| Teacher 2 | `jane` | `123qwe` | Teacher | Jane Smith — instructs "Data Structures" and "Database Systems" |
+| Student 1 | `alice` | `123qwe` | Student | Alice Johnson — can submit/edit/delete own feedback |
+| Student 2 | `bob` | `123qwe` | Student | Bob Williams — can submit/edit/delete own feedback |
+| Student 3 | `charlie` | `123qwe` | Student | Charlie Brown — can submit/edit/delete own feedback |
 
 ### Role Permissions Summary
 
@@ -219,7 +219,7 @@ All AI-generated code was reviewed, tested, and refined through an iterative con
 
 The database is seeded on first run with:
 
-- **4 Courses:** Introduction to Programming, Data Structures, Web Development, Database Systems
+- **4 Courses:** .NET Framework, Angular Fundamentals, ASP.NET Core Deep Dive, SQL Server Essentials
 - **5 Users:** 1 Admin, 2 Teachers, 3 Students (see credentials above)
 - **8 Sample Feedbacks:** Distributed across courses and students with varied ratings
 
